@@ -8,7 +8,7 @@ def get_lists():
     """
     i = 0
     v = []
-    while i < 10_000_000:
+    while i < 1_000_000:
         j = randrange(1, 100)
         k = randrange(10)
         v.append([j, j+k])
@@ -16,7 +16,7 @@ def get_lists():
     return v
 
 
-def get_start_end_lists(video_play_records: list):
+def get_start_and_end_lists(video_play_records: list):
     """
 
     """
@@ -27,25 +27,34 @@ def get_start_end_lists(video_play_records: list):
     return video_start_and_end_times_list
 
 
-def main():
-    counter1 = 0
-    maximum = 0
+def loop_through_video_play_times(video_play_times):
+    """
 
+    """
+    counter = 0
+    maximum_concurrent_videos = 0
+    for play_time in video_play_times:
+        if play_time[1] == "start":
+            counter += 1
+            maximum_concurrent_videos = max(counter, maximum_concurrent_videos)
+        if play_time[1] == "end":
+            counter -= 1
+        print(counter, maximum_concurrent_videos)
+    return maximum_concurrent_videos
+
+
+def main():
     video_play_records = get_lists()
-    video_start_and_end_times_list = get_start_end_lists(video_play_records)
+    video_start_and_end_times_list = get_start_and_end_lists(
+        video_play_records)
     sorted_video_play_times = sorted(video_start_and_end_times_list)
 
     tic = time.perf_counter()
-    for video_play_time in sorted_video_play_times:
-        if video_play_time[1] == "start":
-            counter1 += 1
-            maximum = max(counter1, maximum)
-        if video_play_time[1] == "end":
-            counter1 -= 1
-
-        print(f"counter: {counter1}, max: {maximum}")
+    maximum_concurrent_videos = loop_through_video_play_times(
+        sorted_video_play_times)
     toc = time.perf_counter()
-    print(f"Code ran in {toc - tic:0.4f} seconds")
+    print(
+        f"Code ran in {toc - tic:0.4f} seconds and there was a maximum of {maximum_concurrent_videos} videos playing at once")
 
 
 if __name__ == "__main__":

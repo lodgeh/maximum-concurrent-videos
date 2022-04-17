@@ -2,7 +2,7 @@ import time
 from random import randrange
 
 
-def generate_lists():
+def get_lists():
     """
 
     """
@@ -16,24 +16,24 @@ def generate_lists():
     return v
 
 
-def get_start_end_lists(v: list):
+def get_start_end_lists(video_play_records: list):
     """
 
     """
-    video_play_list = []
-    for vi in v:
-        video_play_list.append([vi[0], "start"])
-        video_play_list.append([vi[1], "end"])
-    return video_play_list
+    video_start_and_end_times_list = []
+    for record in video_play_records:
+        video_start_and_end_times_list.append([record[0], "start"])
+        video_start_and_end_times_list.append([record[1], "end"])
+    return video_start_and_end_times_list
 
 
 def main():
     counter1 = 0
     maximum = 0
 
-    video_list = generate_lists()
-    video_play_list = get_start_end_lists(video_list)
-    sorted_video_play_times = sorted(video_play_list)
+    video_play_records = get_lists()
+    video_start_and_end_times_list = get_start_end_lists(video_play_records)
+    sorted_video_play_times = sorted(video_start_and_end_times_list)
 
     tic = time.perf_counter()
     for video_play_time in sorted_video_play_times:

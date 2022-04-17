@@ -27,7 +27,14 @@ def get_start_and_end_lists(video_play_records: list):
     return video_start_and_end_times_list
 
 
-def loop_through_video_play_times(video_play_times):
+def sort_video_play_times(video_play_times: list):
+    """
+
+    """
+    return sorted(video_play_times, key=lambda x: (-x[0], x[1]), reverse=True)
+
+
+def loop_through_video_play_times(video_play_times: list):
     """
 
     """
@@ -47,7 +54,8 @@ def main():
     video_play_records = get_lists()
     video_start_and_end_times_list = get_start_and_end_lists(
         video_play_records)
-    sorted_video_play_times = sorted(video_start_and_end_times_list)
+    sorted_video_play_times = sort_video_play_times(
+        video_start_and_end_times_list)
 
     tic = time.perf_counter()
     maximum_concurrent_videos = loop_through_video_play_times(
@@ -58,5 +66,4 @@ def main():
 
 
 if __name__ == "__main__":
-
     main()

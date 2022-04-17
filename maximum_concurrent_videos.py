@@ -1,19 +1,19 @@
+import argparse
 import time
+from csv import reader
 from random import randrange
 
 
-def get_lists():
+def get_video_plays_from_csv(file_name):
     """
 
     """
-    i = 0
-    v = []
-    while i < 1_000_000:
-        j = randrange(1, 100)
-        k = randrange(10)
-        v.append([j, j+k])
-        i += 1
-    return v
+    with open(file_name) as csv_file:
+        csv_reader = reader(csv_file)
+        header = next(csv_reader)
+        video_plays_records = [[int(row[0]), int(row[1])]
+                               for row in csv_reader]
+    return video_plays_records
 
 
 def get_start_and_end_lists(video_play_records: list):
@@ -46,24 +46,35 @@ def loop_through_video_play_times(video_play_times: list):
             maximum_concurrent_videos = max(counter, maximum_concurrent_videos)
         if play_time[1] == "end":
             counter -= 1
-        print(counter, maximum_concurrent_videos)
     return maximum_concurrent_videos
 
 
-def main():
-    video_play_records = get_lists()
+def main(file_name):
+    start_timer = time.perf_counter()
+    video_play_records = get_video_plays_from_csv(file_name)
     video_start_and_end_times_list = get_start_and_end_lists(
         video_play_records)
     sorted_video_play_times = sort_video_play_times(
         video_start_and_end_times_list)
-
-    tic = time.perf_counter()
     maximum_concurrent_videos = loop_through_video_play_times(
         sorted_video_play_times)
-    toc = time.perf_counter()
+    end_timer = time.perf_counter()
+
     print(
-        f"Code ran in {toc - tic:0.4f} seconds and there was a maximum of {maximum_concurrent_videos} videos playing at once")
+        f"{len(video_play_records):,} video records processed in {end_timer - start_timer:0.4f} seconds. There was a maximum of {maximum_concurrent_videos:,} videos playing at one time.")
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(
+        description='Process video play times to find the maximum videos playing concurrently')
+
+    parser.add_argument(
+        "file_name",
+        metavar="file_name",
+        type=str,
+        help="Name of csv file"
+    )
+    args = parser.parse_args()
+    file_name = args.file_name
+    print(file_name)
+    main(file_name)

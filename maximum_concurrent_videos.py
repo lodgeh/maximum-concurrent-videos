@@ -1,12 +1,15 @@
 import argparse
 import time
 from csv import reader
-from random import randrange
 
 
 def get_video_plays_from_csv(file_name):
     """
+    Reads video record data from a csv file. 
 
+    Expects start and end times to be in Epoch time.
+
+    Returns a list of lists containing video start and end play times.
     """
     with open(file_name) as csv_file:
         csv_reader = reader(csv_file)
@@ -16,9 +19,14 @@ def get_video_plays_from_csv(file_name):
     return video_plays_records
 
 
-def get_start_and_end_lists(video_play_records: list):
+def get_video_play_times(video_play_records: list):
     """
+    Loops through video play records list.
 
+    Appends list containing the time and action e.g.: ["1642395175", "start"]
+    to video_start_and_end_times_list
+
+    Returns video_start_and_end_times_list
     """
     video_start_and_end_times_list = []
     for record in video_play_records:
@@ -29,14 +37,21 @@ def get_start_and_end_lists(video_play_records: list):
 
 def sort_video_play_times(video_play_times: list):
     """
-
+    Sorts video_play_times list by first element ascendind and second element
+    reverse alphabetically. 
     """
     return sorted(video_play_times, key=lambda x: (-x[0], x[1]), reverse=True)
 
 
-def loop_through_video_play_times(video_play_times: list):
+def get_max_concurrent_video_plays(video_play_times: list):
     """
+    Loops through sorted video play times. 
 
+    Adds to counter if "start" and subtracts from counter if "end".
+
+    Compares counter to maximum_concurrent_videos and replaces if counter is higher.
+
+    Returns maximum_concurrent_videos
     """
     counter = 0
     maximum_concurrent_videos = 0
@@ -51,17 +66,18 @@ def loop_through_video_play_times(video_play_times: list):
 
 def main(file_name):
     start_timer = time.perf_counter()
+
     video_play_records = get_video_plays_from_csv(file_name)
-    video_start_and_end_times_list = get_start_and_end_lists(
-        video_play_records)
+    video_start_and_end_times_list = get_video_play_times(video_play_records)
     sorted_video_play_times = sort_video_play_times(
         video_start_and_end_times_list)
-    maximum_concurrent_videos = loop_through_video_play_times(
+    maximum_concurrent_videos = get_max_concurrent_video_plays(
         sorted_video_play_times)
+
     end_timer = time.perf_counter()
 
-    print(
-        f"{len(video_play_records):,} video records processed in {end_timer - start_timer:0.4f} seconds. There was a maximum of {maximum_concurrent_videos:,} videos playing at one time.")
+    print(f"{len(video_play_records):,} video records processed in {end_timer - start_timer:0.4f} seconds.")
+    print(f"There was a maximum of {maximum_concurrent_videos:,} videos playing at one time.")
 
 
 if __name__ == "__main__":
@@ -76,5 +92,5 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
     file_name = args.file_name
-    print(file_name)
+
     main(file_name)

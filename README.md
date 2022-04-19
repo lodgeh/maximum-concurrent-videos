@@ -36,6 +36,7 @@ I made some assumptions for the task:
 
 - Start and end times are in [Epoch time](https://en.wikipedia.org/wiki/Unix_time). 
 - Data is stored in a csv file - in reality I'm guessing this would be a database or something similar.
+- Videos that start on the exact second that another video ends counts as a concurrent video play.
 
 ### Method
 
